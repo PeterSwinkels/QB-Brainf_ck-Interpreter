@@ -164,7 +164,7 @@ DIM NewInstructionP AS INTEGER
 DIM Position AS INTEGER
 
  FOR Position = 1 TO LEN(LoopList) STEP 4
-  IF CVI(MID$(LoopList, Position, 2)) = InstructionP THEN
+  IF InstructionP = CVI(MID$(LoopList, Position, 2)) THEN
    NewInstructionP = CVI(MID$(LoopList, Position + 2, 2))
    EXIT FOR
   END IF

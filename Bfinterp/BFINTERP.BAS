@@ -2,7 +2,7 @@ DEFINT A-Z
 DECLARE FUNCTION Escape$ (Text AS STRING)
 DECLARE FUNCTION GetLoopList$ (Code AS STRING)
 DECLARE FUNCTION LoadCode$ (Path AS STRING)
-DECLARE FUNCTION Loops (LoopList AS STRING, InstructionP AS INTEGER)
+DECLARE FUNCTION Loops (LoopList AS STRING, InstructionP AS INTEGER, Backwards AS INTEGER)
 DECLARE FUNCTION NextArgument (Arguments AS STRING)
 DECLARE FUNCTION PopArgument$ (Arguments AS STRING, Argument AS STRING)
 DECLARE FUNCTION Unescape$ (Text AS STRING)
@@ -97,11 +97,11 @@ DIM UserInput AS STRING
     END IF
    CASE "["
     IF ASC(MID$(Memory, MemoryP + &H1, &H1)) = &H0 THEN
-     InstructionP = Loops(LoopList, InstructionP)
+     InstructionP = Loops(LoopList, InstructionP, 0)
     END IF
    CASE "]"
     IF NOT ASC(MID$(Memory, MemoryP + &H1, &H1)) = &H0 THEN
-     InstructionP = Loops(LoopList, InstructionP)
+     InstructionP = Loops(LoopList, InstructionP, -1)
     END IF
   END SELECT
 
@@ -131,7 +131,6 @@ DIM StartOfLoop AS INTEGER
      StartOfLoop = CVI(MID$(LoopStack, LEN(LoopStack) - 1, 2))
      LoopStack = LEFT$(LoopStack, LEN(LoopStack) - 2)
      LoopList = LoopList + MKI$(StartOfLoop) + MKI$(Position - 1)
-     LoopList = LoopList + MKI$(Position - 1) + MKI$(StartOfLoop)
     END IF
   END SELECT
  NEXT Position
@@ -159,15 +158,23 @@ DIM FileH AS INTEGER
  LoadCode$ = Code
 END FUNCTION
 
-FUNCTION Loops (LoopList AS STRING, InstructionP AS INTEGER)
+FUNCTION Loops (LoopList AS STRING, InstructionP AS INTEGER, Backwards AS INTEGER)
 DIM NewInstructionP AS INTEGER
 DIM Position AS INTEGER
 
  FOR Position = 1 TO LEN(LoopList) STEP 4
-  IF InstructionP = CVI(MID$(LoopList, Position, 2)) THEN
-   NewInstructionP = CVI(MID$(LoopList, Position + 2, 2))
-   EXIT FOR
-  END IF
+  SELECT CASE Backwards
+   CASE 0
+    IF InstructionP = CVI(MID$(LoopList, Position, 2)) THEN
+     NewInstructionP = CVI(MID$(LoopList, Position + 2, 2))
+     EXIT FOR
+    END IF
+   CASE -1
+    IF InstructionP = CVI(MID$(LoopList, Position + 2, 2)) THEN
+     NewInstructionP = CVI(MID$(LoopList, Position, 2))
+     EXIT FOR
+    END IF
+  END SELECT
  NEXT Position
 
  Loops = NewInstructionP

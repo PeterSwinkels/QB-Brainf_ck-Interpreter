@@ -6,13 +6,13 @@ DECLARE FUNCTION Loops (LoopList AS STRING, InstructionP AS INTEGER, Backwards A
 DECLARE FUNCTION NextArgument (Arguments AS STRING)
 DECLARE FUNCTION PopArgument$ (Arguments AS STRING, Argument AS STRING)
 DECLARE FUNCTION Unescape$ (Text AS STRING)
-DECLARE SUB Main ()
 DECLARE SUB Execute (Code AS STRING, InputLineBreak AS STRING, OutputLineBreak AS STRING)
+DECLARE SUB Main ()
 
 CALL Main
 
 FUNCTION Escape$ (Text AS STRING)
-DIM Character AS STRING
+DIM Character AS STRING * 1
 DIM Escaped AS STRING
 DIM Hexed AS STRING
 DIM Position AS INTEGER
@@ -37,7 +37,7 @@ DIM Position AS INTEGER
 END FUNCTION
 
 SUB Execute (Code AS STRING, InputLineBreak AS STRING, OutputLineBreak AS STRING)
-DIM Character AS STRING
+DIM Character AS STRING * 1
 DIM InputBuffer AS STRING
 DIM InstructionP AS INTEGER
 DIM LoopList AS STRING
@@ -73,12 +73,12 @@ DIM UserInput AS STRING
     Character = MID$(Memory, MemoryP + &H1, &H1)
    
     IF OutputLineBreak = "" THEN
-     PRINT Escape(Character);
+     PRINT Escape$(Character);
     ELSE
      OutputBuffer = OutputBuffer + Character
      
      IF NOT LEFT$(OutputLineBreak, LEN(OutputBuffer)) = OutputBuffer THEN
-      PRINT Escape(OutputBuffer);
+      PRINT Escape$(OutputBuffer);
       OutputBuffer = ""
      ELSEIF OutputBuffer = OutputLineBreak THEN
       PRINT
@@ -88,7 +88,7 @@ DIM UserInput AS STRING
    CASE ","
     IF InputBuffer = "" THEN
      LINE INPUT UserInput
-     InputBuffer = Unescape(UserInput) + InputBuffer + InputLineBreak
+     InputBuffer = Unescape$(UserInput) + InputBuffer + InputLineBreak
     END IF
     
     IF NOT InputBuffer = "" THEN
@@ -110,7 +110,7 @@ DIM UserInput AS STRING
 END SUB
 
 FUNCTION GetLoopList$ (Code AS STRING)
-DIM Character AS STRING
+DIM Character AS STRING * 1
 DIM LoopList AS STRING
 DIM LoopStack AS STRING
 DIM Position AS INTEGER
@@ -182,7 +182,6 @@ END FUNCTION
 
 SUB Main
 DIM Arguments AS STRING
-DIM Code AS STRING
 DIM InputLineBreak AS STRING
 DIM OutputLineBreak AS STRING
 DIM Path AS STRING
@@ -207,8 +206,7 @@ DIM Path AS STRING
   PRINT "Usage:"
   PRINT "BFInterp.exe PATH LINE_BREAK_IN LINE_BREAK_OUT"
  ELSE
-  Code = LoadCode$(Path)
-  Execute Code, Unescape$(InputLineBreak), Unescape$(OutputLineBreak)
+  Execute LoadCode$(Path), Unescape$(InputLineBreak), Unescape$(OutputLineBreak)
  END IF
 END SUB
 
@@ -236,7 +234,7 @@ DIM NextPosition AS INTEGER
 END FUNCTION
 
 FUNCTION Unescape$ (Text AS STRING)
-DIM Character AS STRING
+DIM Character AS STRING * 1
 DIM Position AS INTEGER
 DIM Unescaped AS STRING
 

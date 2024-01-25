@@ -1,5 +1,5 @@
 DEFINT A-Z
-CONST INSTRUCTIONS = "+,-.<>[]"
+CONST INSTRUCTIONS$ = "+,-.<>[]"
 
 DIM Buffer AS STRING
 DIM BufferSize AS INTEGER

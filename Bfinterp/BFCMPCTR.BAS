@@ -9,8 +9,6 @@ DIM InPath AS STRING
 DIM OutFileH AS INTEGER
 DIM OutPath AS STRING
 
-BufferSize = 32000
-
 PRINT "Brainf*ck Compacter v1.01 - by: Peter Swinkels, ***2023***"
 
 LINE INPUT "Input file: "; InPath
@@ -21,6 +19,7 @@ IF NOT (InPath = "" OR OutPath = "") THEN
  OPEN InPath FOR INPUT LOCK READ WRITE AS InFileH
  CLOSE InFileH
 
+ BufferSize = 32000
  InFileH = FREEFILE
  OPEN InPath FOR BINARY LOCK READ WRITE AS InFileH
   OutFileH = FREEFILE
